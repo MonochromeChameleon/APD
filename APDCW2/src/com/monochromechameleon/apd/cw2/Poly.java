@@ -1,7 +1,5 @@
 package com.monochromechameleon.apd.cw2;
 
-import java.util.Arrays;
-
 public class Poly {
     
     private class Pair {
@@ -12,6 +10,32 @@ public class Poly {
             this.coefficient = coeff;
             this.degree = deg;
         }
+        
+        @Override
+        public boolean equals(Object other) {
+            if (!(other instanceof Pair)) return false;
+            Pair that = (Pair)other;
+            return this.coefficient == that.coefficient && this.degree == that.degree;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 97 * hash + this.coefficient;
+            hash = 97 * hash + this.degree;
+            return hash;
+        }
+        
+        @Override
+        public String toString() {
+            if (degree == 1) {
+                return String.format("%dx", coefficient);
+            }
+            if (degree == 0) {
+                return String.valueOf(coefficient);
+            }
+            return String.format("%dx^%d", coefficient, degree);
+        }
     }
     
     private final Pair[] pairs;
@@ -21,8 +45,12 @@ public class Poly {
     }
     
     public Poly(int m, int n) {
-        Pair p = new Pair(m, n);
-        pairs = new Pair[] { p };
+        if (m != 0) {
+            Pair p = new Pair(m, n);
+            pairs = new Pair[] { p };
+        } else {
+            pairs = new Pair[] {};
+        }
     }
     
     private Poly(Pair[] ps) {
@@ -31,7 +59,11 @@ public class Poly {
     }
     
     public int degree() {
-        int maxDegree = 0;
+        if (pairs.length == 0) {
+            return 0;
+        }
+    
+        int maxDegree = Integer.MIN_VALUE;
         for (Pair p : pairs) {
             maxDegree = Math.max(maxDegree, p.degree);
         }
@@ -135,8 +167,34 @@ public class Poly {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 43 * hash + Arrays.deepHashCode(this.pairs);
+        int hash = 3;        
+        for (Pair p : pairs) {
+            int pHash = p.hashCode();
+            hash = 43 * hash + pHash;
+        }
         return hash;
+    }
+    
+    private String innerToString(boolean isFirstTerm) {
+        if (pairs.length == 0) return "";
+        if (pairs.length == 1 && isFirstTerm) return pairs[0].toString();
+        
+        int deg = this.degree();
+        int coeff = this.coeff(deg);
+
+        if (pairs.length == 1) return (new Pair(Math.abs(coeff), deg).toString());
+        
+        Poly firstTerm = new Poly(this.coeff(deg), deg);
+        Poly rest = this.add(firstTerm.minus());
+        if (rest.equals(new Poly())) {
+            return firstTerm.innerToString(false);
+        }
+        boolean restIsPositive = rest.coeff(rest.degree()) > 0;
+        return String.format("%s %s %s", firstTerm.innerToString(isFirstTerm), restIsPositive ? "+" : "-", rest.innerToString(false));
+    }
+    
+    @Override
+    public String toString() {
+        return this.innerToString(true);
     }
 }

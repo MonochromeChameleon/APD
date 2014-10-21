@@ -173,4 +173,27 @@ public class PolyTest {
         assertTrue(p1.equals(p2));
         assertNotSame(p1, p2);
     }
+    
+    @Test
+    public void testHashCode() {
+        Poly p1 = (new Poly(2, 2)).add(new Poly(3, 1)).add(new Poly(6, 0));
+        Poly p2 = (new Poly(2, 2)).add(new Poly(3, 1)).add(new Poly(6, 0));
+
+        assertEquals(p1.hashCode(), p2.hashCode());
+    }
+    
+    @Test
+    public void testToString() {
+        Poly p1 = (new Poly(2, 2)).add(new Poly(3, 1)).add(new Poly(6, 0));
+        Poly p2 = (new Poly(2, 1)).add(new Poly(3, 0)).add(new Poly(6, -1));
+        Poly p3 = (new Poly(2, 2)).add(new Poly(-3, 1)).add(new Poly(6, 0));
+        Poly p4 = (new Poly(0, 5));
+        Poly p5 = new Poly(-3, 3);
+        
+        assertEquals("2x^2 + 3x + 6", p1.toString());
+        assertEquals("2x + 3 + 6x^-1", p2.toString());
+        assertEquals("2x^2 - 3x + 6", p3.toString());
+        assertEquals("", p4.toString());
+        assertEquals("-3x^3", p5.toString());
+    }
 }
