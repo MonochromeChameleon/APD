@@ -2,39 +2,42 @@ package com.monochromechameleon.apd.cw2;
 
 public class Poly {
     
-    private class Pair {
+    private static class Pair {
         private final int coefficient;
-        private final int degree;
+        private final int exponent;
         
         public Pair(int coeff, int deg) {
             this.coefficient = coeff;
-            this.degree = deg;
+            this.exponent = deg;
         }
         
         @Override
         public boolean equals(Object other) {
             if (!(other instanceof Pair)) return false;
             Pair that = (Pair)other;
-            return this.coefficient == that.coefficient && this.degree == that.degree;
+            return this.coefficient == that.coefficient && this.exponent == that.exponent;
         }
 
         @Override
         public int hashCode() {
             int hash = 7;
             hash = 97 * hash + this.coefficient;
-            hash = 97 * hash + this.degree;
+            hash = 97 * hash + this.exponent;
             return hash;
         }
         
         @Override
         public String toString() {
-            if (degree == 1) {
+            if (coefficient == 0) {
+                return "";
+            }
+            if (exponent == 1) {
                 return String.format("%dx", coefficient);
             }
-            if (degree == 0) {
+            if (exponent == 0) {
                 return String.valueOf(coefficient);
             }
-            return String.format("%dx^%d", coefficient, degree);
+            return String.format("%dx^%d", coefficient, exponent);
         }
     }
     
@@ -45,12 +48,8 @@ public class Poly {
     }
     
     public Poly(int m, int n) {
-        if (m != 0) {
-            Pair p = new Pair(m, n);
-            pairs = new Pair[] { p };
-        } else {
-            pairs = new Pair[] {};
-        }
+        Pair p = new Pair(m, n);
+        pairs = new Pair[] { p };
     }
     
     private Poly(Pair[] ps) {
@@ -62,10 +61,9 @@ public class Poly {
         if (pairs.length == 0) {
             return 0;
         }
-    
-        int maxDegree = Integer.MIN_VALUE;
+        Integer maxDegree = pairs[0].exponent;
         for (Pair p : pairs) {
-            maxDegree = Math.max(maxDegree, p.degree);
+            maxDegree = Math.max(maxDegree, p.exponent);
         }
         return maxDegree;
     }
@@ -74,7 +72,7 @@ public class Poly {
         // Because this is a sparse array, we don't know at what index the right pair
         // will appear, so we have to iterate.
         for (Pair p : pairs) {
-            if (p.degree == d) {
+            if (p.exponent == d) {
                 return p.coefficient;
             }
         }
@@ -94,14 +92,14 @@ public class Poly {
         Pair[] addPairs = {};
 
         for (Pair p : pairs) {
-            int sumCoeff = this.coeff(p.degree) + poly.coeff(p.degree);
+            int sumCoeff = this.coeff(p.exponent) + poly.coeff(p.exponent);
             if (sumCoeff != 0) {
-                addPairs = append(addPairs, new Pair(sumCoeff, p.degree));
+                addPairs = append(addPairs, new Pair(sumCoeff, p.exponent));
             }
         }
         for (Pair p : poly.pairs) {
-            if (this.coeff(p.degree) == 0) {
-                addPairs = append(addPairs, new Pair(p.coefficient, p.degree));
+            if (this.coeff(p.exponent) == 0) {
+                addPairs = append(addPairs, new Pair(p.coefficient, p.exponent));
             }
         }
         
@@ -119,7 +117,7 @@ public class Poly {
         for (Pair p1 : pairs) {
             for (Pair p2 : poly.pairs) {
                 int newCoefficient = p1.coefficient * p2.coefficient;
-                int newDegree = p1.degree + p2.degree;
+                int newDegree = p1.exponent + p2.exponent;
                 
                 Poly component = new Poly(newCoefficient, newDegree);
 
@@ -133,7 +131,7 @@ public class Poly {
     public Poly minus() {
         Poly ret = new Poly();
         for (Pair p : pairs) {
-            ret = ret.add(new Poly(-p.coefficient, p.degree));
+            ret = ret.add(new Poly(-p.coefficient, p.exponent));
         }
         return ret;
     }
@@ -155,11 +153,11 @@ public class Poly {
         // We need to compare all pairs in this, as well as all pairs in that, to ensure
         // that one set of pairs is not a subset of the other.
         for (Pair p : this.pairs) {
-            if (that.coeff(p.degree) != p.coefficient) return false;
+            if (that.coeff(p.exponent) != p.coefficient) return false;
         }
         
         for (Pair p : that.pairs) {
-            if (this.coeff(p.degree) != p.coefficient) return false;
+            if (this.coeff(p.exponent) != p.coefficient) return false;
         }
 
         return true;
