@@ -1,13 +1,15 @@
 package com.monochromechameleon.apd.cw2;
 
 /**
- * Utility class for parsing command-line input into two polynomials and an operation.
+ * Utility class for parsing command-line input into two polynomials and an
+ * operation.
  */
 public class PolyOperation {
+
     private Operation operation = Operation.TOSTRING;
     private final Poly p1;
     private final Poly p2;
-    
+
     public PolyOperation(String[] args) {
         // Assume that the input is a sequence of integers, optionally followed
         // by a string defining the operation to be performed and then a further
@@ -28,7 +30,7 @@ public class PolyOperation {
         // p2 is the polynomial for everything after our operation
         p2 = Poly.parse(args, operationIndex + 1, args.length);
     }
-    
+
     private static boolean isLikelyNumeric(String str) {
         // We can check for numeric values by looking at the last character of
         // the string: negative integers will still pass, while our string

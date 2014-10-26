@@ -18,19 +18,19 @@ public class PolyTest {
         Poly p = new Poly(2, 4);
         assertEquals(4, p.degree());
     }
-    
+
     @Test
     public void testComplexDegree() {
         Poly p = (new Poly(2, 2)).add(new Poly(3, 1)).add(new Poly(6, 0));
         assertEquals(2, p.degree());
     }
-    
+
     @Test
     public void testNegativeDegree() {
         Poly p = new Poly(3, -4);
         assertEquals(4, p.degree());
     }
-    
+
     @Test
     public void testZeroDegree() {
         Poly p = (new Poly(5, 5).add(new Poly(-5, 5)));
@@ -42,7 +42,7 @@ public class PolyTest {
         Poly p = new Poly(2, 4);
         assertEquals(2, p.coeff(4));
     }
-    
+
     @Test
     public void testZeroCoeff() {
         Poly p = new Poly(2, 4);
@@ -73,7 +73,7 @@ public class PolyTest {
         assertEquals(2, pAdd.coeff(4));
         assertEquals(3, pAdd.coeff(3));
     }
-    
+
     @Test
     public void testSubSameDegree() {
         Poly p1 = new Poly(2, 4);
@@ -150,7 +150,7 @@ public class PolyTest {
         assertTrue(p1.equals(p2));
         assertNotSame(p1, p2);
     }
-    
+
     @Test
     public void testHashCode() {
         Poly p1 = (new Poly(2, 2)).add(new Poly(3, 1)).add(new Poly(6, 0));
@@ -159,7 +159,7 @@ public class PolyTest {
         assertEquals(p1.hashCode(), p2.hashCode());
         assertNotSame(p1, p2);
     }
-    
+
     @Test
     public void testToString() {
         Poly p1 = (new Poly(2, 2)).add(new Poly(3, 1)).add(new Poly(6, 0));
@@ -167,21 +167,21 @@ public class PolyTest {
         Poly p3 = (new Poly(2, 2)).add(new Poly(-3, 1)).add(new Poly(6, 0));
         Poly p4 = (new Poly(0, 5));
         Poly p5 = new Poly(-3, 3);
-        
+
         assertEquals("2x^2 + 3x + 6", p1.toString());
         assertEquals("8x + 3", p2.toString());
         assertEquals("2x^2 - 3x + 6", p3.toString());
         assertEquals("0", p4.toString());
         assertEquals("-3x^3", p5.toString());
     }
-    
+
     @Test
     public void testParse() {
-        String[] args = { "1", "2", "-3", "4", "5", "-6", "7" };
+        String[] args = {"1", "2", "-3", "4", "5", "-6", "7"};
         Poly p12 = Poly.parse(args, 0, 2);
         Poly p3 = Poly.parse(args, 2, 3);
         Poly p7 = Poly.parse(args, 0, args.length);
-        
+
         assertEquals(p12, new Poly(1, 2));
         assertEquals(p3, new Poly(-3, 0));
         assertEquals(7, p7.coeff(0));
