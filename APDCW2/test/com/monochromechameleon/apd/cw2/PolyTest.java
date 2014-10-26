@@ -24,6 +24,12 @@ public class PolyTest {
         Poly p = (new Poly(2, 2)).add(new Poly(3, 1)).add(new Poly(6, 0));
         assertEquals(2, p.degree());
     }
+    
+    @Test
+    public void testNegativeDegree() {
+        Poly p = new Poly(3, -4);
+        assertEquals(4, p.degree());
+    }
 
     @Test
     public void testCoeff() {
@@ -63,19 +69,6 @@ public class PolyTest {
     }
     
     @Test
-    public void testAddNegativeDegree() {
-        Poly p1 = new Poly(2, 4);
-        Poly p2 = new Poly(3, -1);
-        
-        Poly pAdd = p1.add(p2);
-        
-        assertNotSame(p1, pAdd);
-        assertNotSame(p2, pAdd);
-        assertEquals(2, pAdd.coeff(4));
-        assertEquals(3, pAdd.coeff(-1));
-    }
-
-    @Test
     public void testSubSameDegree() {
         Poly p1 = new Poly(2, 4);
         Poly p2 = new Poly(3, 4);
@@ -99,23 +92,7 @@ public class PolyTest {
         assertEquals(2, pSub.coeff(4));
         assertEquals(-3, pSub.coeff(3));
     }
-    
-    @Test
-    public void testSubNegativeDegree() {
-        Poly p1 = new Poly(2, 4);
-        Poly p2 = new Poly(3, -1);
-        
-        Poly pSub = p1.sub(p2);
-        
-        assertNotSame(p1, pSub);
-        assertNotSame(p2, pSub);
-        assertEquals(2, pSub.coeff(4));
-        assertEquals(-3, pSub.coeff(-1));
-    }
 
-    /**
-     * Test of mult method, of class Poly.
-     */
     @Test
     public void testSimpleMult() {
         Poly p1 = new Poly(2, 4);
@@ -147,9 +124,6 @@ public class PolyTest {
         assertEquals(18, pMult.coeff(0));
     }
 
-    /**
-     * Test of minus method, of class Poly.
-     */
     @Test
     public void testMinus() {
         Poly p1 = (new Poly(2, 2)).add(new Poly(3, 1)).add(new Poly(6, 0));
@@ -162,9 +136,6 @@ public class PolyTest {
         assertEquals(-6, pMinus.coeff(0));
     }
 
-    /**
-     * Test of equals method, of class Poly.
-     */
     @Test
     public void testEquals() {
         Poly p1 = (new Poly(2, 2)).add(new Poly(3, 1)).add(new Poly(6, 0));
@@ -180,6 +151,7 @@ public class PolyTest {
         Poly p2 = (new Poly(2, 2)).add(new Poly(3, 1)).add(new Poly(6, 0));
 
         assertEquals(p1.hashCode(), p2.hashCode());
+        assertNotSame(p1, p2);
     }
     
     @Test
@@ -191,9 +163,22 @@ public class PolyTest {
         Poly p5 = new Poly(-3, 3);
         
         assertEquals("2x^2 + 3x + 6", p1.toString());
-        assertEquals("2x + 3 + 6x^-1", p2.toString());
+        assertEquals("8x + 3", p2.toString());
         assertEquals("2x^2 - 3x + 6", p3.toString());
         assertEquals("", p4.toString());
         assertEquals("-3x^3", p5.toString());
+    }
+    
+    @Test
+    public void testParse() {
+        String[] args = { "1", "2", "3", "4", "5", "6", "7" };
+        Poly p12 = Poly.parse(args, 0, 2);
+        Poly p3 = Poly.parse(args, 2, 3);
+        Poly p7 = Poly.parse(args, 0, args.length);
+        
+        assertEquals(p12, new Poly(1, 2));
+        assertEquals(p3, new Poly(3, 0));
+        assertEquals(7, p7.coeff(0));
+        assertEquals(6, p7.degree());
     }
 }

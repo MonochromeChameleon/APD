@@ -2,13 +2,18 @@ package com.monochromechameleon.apd.cw2;
 
 public class Poly {
     
+    /**
+     * Internal class defining a single term in a polynomial.
+     */
     private static class Pair {
         private final int coefficient;
         private final int exponent;
         
         public Pair(int coeff, int deg) {
             this.coefficient = coeff;
-            this.exponent = deg;
+            // Polynomials are mathematically defined as having positive integer
+            // exponents, so we enforce that upon creation.
+            this.exponent = Math.abs(deg);
         }
         
         @Override
@@ -44,19 +49,43 @@ public class Poly {
     private final Pair[] pairs;
     
     public Poly() {
-        pairs = new Pair[] {};
+        this.pairs = new Pair[] {};
     }
     
     public Poly(int m, int n) {
         Pair p = new Pair(m, n);
-        pairs = new Pair[] { p };
+        this.pairs = new Pair[] { p };
     }
     
-    private Poly(Pair[] ps) {
-        // Utility constructor
-        pairs = ps;
+    /**
+     * Private utility constructor to create a polynomial with more than one term
+     * @param pairs the array of Pairs corresponding to the terms in the polynomial
+     */
+    private Poly(Pair[] pairs) {
+        this.pairs = pairs;
     }
     
+    /**
+     * Utility function for creating a Poly from an array of strings
+     * @param args the input array - assumed to all be integers within the range of interest
+     * @param startIndex the index of the first item of interest in the array
+     * @param endIndex the index of the first item not of interest in the array
+     * @return a polynomial corresponding to the sum of the pairs of input integers
+     */
+    public static Poly parse(String[] args, int startIndex, int endIndex) {
+        Poly p = new Poly();
+        for (int ix = startIndex; ix < endIndex; ix += 2) {
+            int arg0 = Integer.parseInt(args[ix]);
+            int arg1 = ix < endIndex - 1 ? Integer.parseInt(args[ix + 1]) : 0;
+
+            p = p.add(new Poly(arg0, arg1));
+        }
+        return p;
+    }
+    
+    /**
+     * @return the highest exponent in the array of Pairs
+     */
     public int degree() {
         if (pairs.length == 0) {
             return 0;
@@ -80,6 +109,12 @@ public class Poly {
         return 0;
     }
     
+    /**
+     * Utility function for appending a Pair to an array of Pairs
+     * @param pairs the original array
+     * @param newPair the additional Pair to append
+     * @return the array that is the conjunct of pairs and newPair
+     */
     private static Pair[] append(Pair[] pairs, Pair newPair) {
         Pair[] ret = new Pair[pairs.length + 1];
         System.arraycopy(pairs, 0, ret, 0, pairs.length);
@@ -87,6 +122,11 @@ public class Poly {
         return ret;
     }
         
+    /**
+     * Adds a polynomial to this
+     * @param poly the Poly to be added
+     * @return a new Poly that is the sum of this and poly
+     */
     public Poly add(Poly poly) {
         
         Pair[] addPairs = {};
@@ -106,10 +146,20 @@ public class Poly {
         return new Poly(addPairs);
     }
     
+    /**
+     * Subtracts a polynomial from this
+     * @param poly the Poly to be subtracted
+     * @return a new Poly that is this minus poly
+     */
     public Poly sub(Poly poly) {
         return this.add(poly.minus());
     }
     
+    /**
+     * Multiplies this by another polynomial
+     * @param poly the Poly by which this should be multiplied
+     * @return a new Poly that is the product of this and poly
+     */
     public Poly mult(Poly poly) {
         
         Poly result = new Poly();
@@ -128,12 +178,11 @@ public class Poly {
         return result;
     }
     
+    /**
+     * @return a new polynomial that is this multiplied by -1;
+     */
     public Poly minus() {
-        Poly ret = new Poly();
-        for (Pair p : pairs) {
-            ret = ret.add(new Poly(-p.coefficient, p.exponent));
-        }
-        return ret;
+        return this.mult(new Poly(-1, 0));
     }
     
     @Override
@@ -173,21 +222,36 @@ public class Poly {
         return hash;
     }
     
+    /**
+     * Utility function to handle signed toString operations
+     * @param isFirstTerm whether or not we are at the start of the string
+     * @return a string representation of the polynomial
+     */
     private String innerToString(boolean isFirstTerm) {
+        // Return an empty string for an empty polynomial
         if (pairs.length == 0) return "";
+        // If this is the first term in the polynomial we don't worry about sign.
         if (pairs.length == 1 && isFirstTerm) return pairs[0].toString();
         
         int deg = this.degree();
         int coeff = this.coeff(deg);
 
+        // If this is not the first term, the sign will already have been taken 
+        // care of, so we should use the absolute value of the coefficient.
         if (pairs.length == 1) return (new Pair(Math.abs(coeff), deg).toString());
         
+        // Split the polynomial into the first term and the remainder.
         Poly firstTerm = new Poly(this.coeff(deg), deg);
         Poly rest = this.add(firstTerm.minus());
         if (rest.equals(new Poly())) {
+            // We have reached the end.
             return firstTerm.innerToString(false);
         }
+        // There are more terms in the remainder, so we need to determine whether
+        // the coefficient of the next term is positive or negative.
         boolean restIsPositive = rest.coeff(rest.degree()) > 0;
+        
+        // Join the first term to the rest with an appropriate conjunction.
         return String.format("%s %s %s", firstTerm.innerToString(isFirstTerm), restIsPositive ? "+" : "-", rest.innerToString(false));
     }
     
