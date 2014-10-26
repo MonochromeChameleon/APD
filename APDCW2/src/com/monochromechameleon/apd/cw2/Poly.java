@@ -53,12 +53,18 @@ public class Poly {
     }
     
     public Poly(int m, int n) {
+        if (m == 0) {
+            // Don't create a pair equal to zero;
+            this.pairs = new Pair[] {};
+            return;
+        }
         Pair p = new Pair(m, n);
         this.pairs = new Pair[] { p };
     }
     
     /**
      * Private utility constructor to create a polynomial with more than one term
+     * 
      * @param pairs the array of Pairs corresponding to the terms in the polynomial
      */
     private Poly(Pair[] pairs) {
@@ -67,6 +73,7 @@ public class Poly {
     
     /**
      * Utility function for creating a Poly from an array of strings
+     * 
      * @param args the input array - assumed to all be integers within the range of interest
      * @param startIndex the index of the first item of interest in the array
      * @param endIndex the index of the first item not of interest in the array
@@ -92,7 +99,8 @@ public class Poly {
         }
         Integer maxDegree = pairs[0].exponent;
         for (Pair p : pairs) {
-            maxDegree = Math.max(maxDegree, p.exponent);
+            // Defend against zero coefficients
+            if (p.coefficient != 0) maxDegree = Math.max(maxDegree, p.exponent);
         }
         return maxDegree;
     }
@@ -228,8 +236,8 @@ public class Poly {
      * @return a string representation of the polynomial
      */
     private String innerToString(boolean isFirstTerm) {
-        // Return an empty string for an empty polynomial
-        if (pairs.length == 0) return "";
+        // Return zero for an empty polynomial
+        if (pairs.length == 0) return "0";
         // If this is the first term in the polynomial we don't worry about sign.
         if (pairs.length == 1 && isFirstTerm) return pairs[0].toString();
         

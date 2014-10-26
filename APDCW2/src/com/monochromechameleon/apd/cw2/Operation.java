@@ -1,8 +1,8 @@
 package com.monochromechameleon.apd.cw2;
 
 /**
- * Enum value defining the available operations for our command-line testing
- * and the evaluations of them.
+ * Enum defining the available operations for our command-line testing, as well
+ * as the string evaluations of those operations.
  */
 public enum Operation {
 

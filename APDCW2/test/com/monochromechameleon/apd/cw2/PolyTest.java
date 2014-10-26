@@ -30,6 +30,12 @@ public class PolyTest {
         Poly p = new Poly(3, -4);
         assertEquals(4, p.degree());
     }
+    
+    @Test
+    public void testZeroDegree() {
+        Poly p = (new Poly(5, 5).add(new Poly(-5, 5)));
+        assertEquals(0, p.degree());
+    }
 
     @Test
     public void testCoeff() {
@@ -165,19 +171,19 @@ public class PolyTest {
         assertEquals("2x^2 + 3x + 6", p1.toString());
         assertEquals("8x + 3", p2.toString());
         assertEquals("2x^2 - 3x + 6", p3.toString());
-        assertEquals("", p4.toString());
+        assertEquals("0", p4.toString());
         assertEquals("-3x^3", p5.toString());
     }
     
     @Test
     public void testParse() {
-        String[] args = { "1", "2", "3", "4", "5", "6", "7" };
+        String[] args = { "1", "2", "-3", "4", "5", "-6", "7" };
         Poly p12 = Poly.parse(args, 0, 2);
         Poly p3 = Poly.parse(args, 2, 3);
         Poly p7 = Poly.parse(args, 0, args.length);
         
         assertEquals(p12, new Poly(1, 2));
-        assertEquals(p3, new Poly(3, 0));
+        assertEquals(p3, new Poly(-3, 0));
         assertEquals(7, p7.coeff(0));
         assertEquals(6, p7.degree());
     }
