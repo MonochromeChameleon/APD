@@ -1,7 +1,7 @@
 package com.monochromechameleon.apd.cw3;
 
 /**
- *
+ * Modification of the DogBot lab file
  */
 public class PlainDogBot implements DogBot {
 
@@ -40,16 +40,15 @@ public class PlainDogBot implements DogBot {
     public String noise() {
         if (hungry > 8 && tired < 11) {
             return "whine";
-        } else if (tired > 7 && tired > hungry) {
+        } 
+        if (tired > 7 && tired > hungry) {
             return "snore";
-        } else {
-            return "woof";
         }
+        return "woof";
     }
     
     @Override
     public String toString() {
         return name;
     }
-
 }

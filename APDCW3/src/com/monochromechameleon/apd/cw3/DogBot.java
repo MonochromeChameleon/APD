@@ -1,10 +1,7 @@
 package com.monochromechameleon.apd.cw3;
 
-import java.util.Observer;
-
 /**
- *
- * @author hgreenish
+ * Interface defining the common methods on RacingDogBot and PlainDogBot
  */
 public interface DogBot {
     boolean eat();

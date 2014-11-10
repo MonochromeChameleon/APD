@@ -1,7 +1,7 @@
 package com.monochromechameleon.apd.cw3;
 
 /**
- *
+ * Modification of the RacingDogBot lab file
  */
 public class RacingDogBot extends PlainDogBot {
 
