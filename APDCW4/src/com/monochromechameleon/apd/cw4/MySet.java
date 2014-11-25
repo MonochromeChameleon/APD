@@ -1,74 +1,95 @@
 package com.monochromechameleon.apd.cw4;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
+import java.util.NoSuchElementException;
 
-public class MySet<E> implements Set<E> {
+public class MySet<E> {
 
-    @Override
-    public int size() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static class MySetIterator<E> implements Iterator<E> {
+
+        protected int index;
+        protected final List<E> items;
+
+        public MySetIterator(List<E> theItems) {
+            this.items = theItems;
+            index = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < items.size();
+        }
+
+        @Override
+        public E next() {
+            if (hasNext()) {
+                E ret = items.get(index);
+                index += 1;
+                return ret;
+            }
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 
-    @Override
-    public boolean isEmpty() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private final ArrayList<E> els;
+
+    public MySet() {
+        els = new ArrayList<>();
     }
 
-    @Override
-    public boolean contains(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Iterator<E> iterator() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new MySetIterator(els);
+    }
+
+    public void insert(E el) {
+        if (getIndex(el) < 0) {
+            els.add(el);
+        }
+    }
+
+    public void remove(E el) {
+        int i = getIndex(el);
+        if (i < 0) {
+            return;
+        }
+        els.set(i, els.get(els.size() - 1));
+        els.remove(els.size() - 1);
+    }
+
+    public boolean isIn(E el) {
+        return getIndex(el) >= 0;
+    }
+
+    private int getIndex(E el) {
+        for (int i = 0; i < els.size(); i++) {
+            if (el.equals(els.get(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int size() {
+        return els.size();
     }
 
     @Override
-    public Object[] toArray() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String toString() {
+        if (els.isEmpty()) {
+            return "{}";
+        } else {
+            String str = "{" + els.get(0);
+            for (int i = 1; i < els.size(); i++) {
+                str += "," + els.get(i);
+            }
+            return str + "}";
+        }
     }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean add(E e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean remove(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends E> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void clear() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

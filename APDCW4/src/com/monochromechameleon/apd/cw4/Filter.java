@@ -16,18 +16,39 @@ public class Filter<E> implements Iterator<E> {
     
     @Override
     public boolean hasNext() {
-        if (!it.hasNext()) {
+        if (next != null) {
+            // If we already know the next value, return true immediately.
+            return true;
+        }
+        try {
+            // Try to find the next valid value and recurse.
+            getNext();
+            return hasNext();
+        } catch (NoSuchElementException e) {
             return false;
         }
+    }
+    
+    private E getNext() {
+        if (!it.hasNext()) {
+            throw new NoSuchElementException();
+        }
         next = it.next();
-        return checker.check(next) ? true : hasNext();
+        return checker.check(next) ? next : getNext();
     }
 
     @Override
     public E next() {
         if (hasNext()) {
-            return next;
+            E ret = next;
+            next = null;
+            return ret;
         }
         throw new NoSuchElementException();
+    }
+    
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
     }
 }
