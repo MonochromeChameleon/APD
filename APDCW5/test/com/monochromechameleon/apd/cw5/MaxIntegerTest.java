@@ -3,13 +3,10 @@ package com.monochromechameleon.apd.cw5;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class MaxIntegerTest {
     
-    /**
-     * Test of join method, of class MaxInteger.
-     */
     @Test
     public void testMaxInteger() {
         List<Integer> ints = Arrays.asList(1, 2, 3, 4, 5);
@@ -19,5 +16,4 @@ public class MaxIntegerTest {
         
         assertEquals(expected, result);
     }
-    
 }

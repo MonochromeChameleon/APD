@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class OrderedLists implements Joiner<Integer, List<Integer>> {
+public class SortList implements Join<Integer, List<Integer>> {
 
     @Override
     public List<Integer> join(Integer f, List<Integer> b) {

@@ -1,11 +1,5 @@
-package com.monochromechameleon.apd.cw5.runners;
+package com.monochromechameleon.apd.cw5;
 
-import com.monochromechameleon.apd.cw5.AddIntegers;
-import com.monochromechameleon.apd.cw5.Fold;
-import com.monochromechameleon.apd.cw5.Joiner;
-import com.monochromechameleon.apd.cw5.MaxInteger;
-import com.monochromechameleon.apd.cw5.MaxLength;
-import com.monochromechameleon.apd.cw5.OrderedLists;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +23,7 @@ public class Main {
         
         String promptString = "Enter numbers:";
         String resultString;
-        Joiner join;
+        Join join;
         
         switch(line) {
             case "1":
@@ -42,7 +36,7 @@ public class Main {
                 break;
             case "3":
                 resultString = "The sorted list is";
-                join = new OrderedLists();
+                join = new SortList();
                 break;
             case "4":
                 promptString = "Enter text";
